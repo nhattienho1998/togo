@@ -1,0 +1,40 @@
+version: '3.8'
+
+networks:
+  togo-network:
+
+services:
+  togo:
+    image: togo
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: always
+    ports:
+    - '5050:5050'
+    environment:
+      - HOST=database
+      - PORT=5432
+      - USERNAME=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+    networks:
+      - togo-network
+    command: sh -c "sleep 5 && ./togo"
+    depends_on:
+      - database
+
+  database:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - '5432:5432'
+    volumes:
+      - dbdata_postgres:/var/lib/postgresql/data
+    networks:
+      - togo-network
+volumes:
+  dbdata_postgres:
