@@ -7,7 +7,7 @@ services:
   togo-test:
     build:
       context: .
-      dockerfile: Dockerfile.test
+      dockerfile: test.dockerfile
     volumes:
       - $PWD:/go/src/togo
     environment:
